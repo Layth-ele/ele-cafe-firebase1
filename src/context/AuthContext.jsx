@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
-import { onAuthStateChange, checkAdminStatus } from '../firebase/auth'
+import { subscribeToAuthState, isAdmin } from '../firebase/auth'
 
 const AuthContext = createContext()
 
@@ -13,18 +13,18 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
-  const [isAdmin, setIsAdmin] = useState(false)
+  const [isAdminUser, setIsAdminUser] = useState(false)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChange(async (user) => {
+    const unsubscribe = subscribeToAuthState(async (user) => {
       setUser(user)
       
       if (user) {
-        const adminStatus = await checkAdminStatus(user)
-        setIsAdmin(adminStatus)
+        const adminStatus = await isAdmin(user.uid)
+        setIsAdminUser(adminStatus)
       } else {
-        setIsAdmin(false)
+        setIsAdminUser(false)
       }
       
       setLoading(false)
@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }) => {
 
   const value = {
     user,
-    isAdmin,
+    isAdmin: isAdminUser,
     loading
   }
 
