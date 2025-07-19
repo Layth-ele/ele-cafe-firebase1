@@ -16,6 +16,6 @@ initializeNotificationServices().then((result) => {
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <App />
-  </StrictMode>,
+  </StrictMode>
 )
 
